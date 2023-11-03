@@ -1,0 +1,26 @@
+#----Back propagation neural network (BPNN) model for prediction using the Wholesale Customers dataset----------
+import pandas as pd
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# load the dataset
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00292/Wholesale%20customers%20data.csv"
+data = pd.read_csv(url)
+# select the features and target
+X = data[data.columns[2:]]
+y = data['Channel']
+
+# split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+# train the back propagation neural network model on the training data
+clf = MLPClassifier(hidden_layer_sizes=(100,), max_iter=1000, activation='relu',
+                    solver='adam', verbose=10, tol=1e-4, random_state=1,
+                    learning_rate_init=.1)
+clf.fit(X_train, y_train)
+ 
+# make predictions on the test data
+y_pred = clf.predict(X_test)
+# evaluate the model's accuracy on the test data
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy: ", accuracy)
