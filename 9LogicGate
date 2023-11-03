@@ -1,0 +1,84 @@
+import numpy as np
+# Define sigmoid function for activation
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# Define derivative of sigmoid function
+def sigmoid_derivative(x):
+    return x * (1 - x)
+
+# Define input and output data for AND gate
+# 2-input AND gate, and a bias term is added (1) to each input.
+X = np.array([[0,0,1], [0,1,1], [1,0,1], [1,1,1]])
+y = np.array([[0], [0], [0], [1]])
+
+# Define random initial weights
+np.random.seed(1)
+W = np.random.randn(3,1)
+
+# Define learning rate and number of iterations
+lr = 0.1
+epochs = 5000
+# Train the neural network using backpropagation
+for i in range(epochs):
+    # Forward propagation
+    z = np.dot(X, W)
+    y_pred = sigmoid(z)
+    # Calculate error and delta for output layer
+    error = y - y_pred
+    delta = error * sigmoid_derivative(y_pred)
+    # Update weights
+    W += np.dot(X.T, delta) * lr
+    # Print progress
+    if i % 1000 == 0:
+        print("Epoch:", i, "Error:", np.mean(np.abs(error)))
+
+# Test the trained neural network on new data
+test_data = np.array([[0,0,1], [0,1,1], [1,0,1], [1,1,1]])
+test_output = sigmoid(np.dot(test_data, W))
+print("Input:")
+print(test_data[:,:2])
+print("Output:")
+print(np.round(test_output))
+ 
+#--------Implementing OR Gate in NN------------------
+import numpy as np
+# Define sigmoid function for activation
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# Define derivative of sigmoid function
+def sigmoid_derivative(x):
+    return x * (1 - x)
+
+# Define input and output data for OR gate
+X = np.array([[0,0,1], [0,1,1], [1,0,1], [1,1,1]])
+y = np.array([[0], [1], [1], [1]])
+# Define learning rate and number of iterations
+lr = 0.1
+epochs = 5000
+
+# Train the neural network using backpropagation
+for i in range(epochs):
+    # Forward propagation
+    z = np.dot(X, W)
+    y_pred = sigmoid(z)
+
+    # Calculate error and delta for output layer
+    error = y - y_pred
+    delta = error * sigmoid_derivative(y_pred)
+
+    # Update weights
+    W += np.dot(X.T, delta) * lr
+
+    # Print progress
+    if i % 100 == 0:
+        print("Epoch:", i, "Error:", np.mean(np.abs(error)))
+
+# Test the trained neural network on new data
+test_data = np.array([[0,0,1], [0,1,1], [1,0,1], [1,1,1]])
+test_output = sigmoid(np.dot(test_data, W))
+print("Input:")
+print(test_data[:,:2])
+print("Output:")
+print(np.round(test_output))
