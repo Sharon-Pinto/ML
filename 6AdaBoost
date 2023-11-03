@@ -1,0 +1,38 @@
+from sklearn.ensemble import AdaBoostClassifier
+#Importing the rest of the libraries
+from sklearn.datasets import load_wine
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+import pandas as pd
+
+#Step 2 – Load the dataset
+#Load the wine dataset
+wine = load_wine()
+X = pd.DataFrame(wine.data, columns=wine.feature_names)
+y = pd.Series(wine.target)
+
+#Step 3 – Splitting the data into trainigng & testing sets
+# Split the dataset into 70% training and 30% test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=23)
+
+#Step 4 – Build a Decision Tree Stump Model and get its Accuracy Score.
+#Train a Decision Tree Classifier
+dtclf = DecisionTreeClassifier(max_depth=1, criterion='gini', random_state=23)
+dtclf.fit(X_train,y_train)
+dtclf_pred = dtclf.predict(X_test)
+
+dtclf_acc = round(accuracy_score(y_test,dtclf_pred),3)
+print(f"Decision Tree Classifier Test Accuracy Score: ", dtclf_acc)
+ 
+#Step 5 – The performance is quite poor. So Build an AdaBoost Classifier and get its Accuracy Score
+#AdaBoost Classifier using Decision Tree as base learner
+adaclf = AdaBoostClassifier(base_estimator=dtclf,
+                            n_estimators=40,
+                            learning_rate=0.5,
+                            random_state=23)
+adaclf.fit(X_train,y_train)
+adaclf_pred = adaclf.predict(X_test)
+
+adaclf_acc = round(accuracy_score(y_test,adaclf_pred),3)
+print(f"Decision Tree AdaBoost Model Test Accuracy Score : ", adaclf_acc)
