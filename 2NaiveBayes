@@ -1,0 +1,100 @@
+#NAIVE BAYES
+import pandas as pd
+from sklearn.model_selection import train_test_split # for splitting the dataset into train and test sets
+from sklearn.feature_extraction.text import CountVectorizer # for converting text data into numerical feature vectors
+from sklearn.naive_bayes import MultinomialNB # for training a Naive Bayes model
+from sklearn.metrics import accuracy_score # for measuring the accuracy of the model
+
+#upload data file into jupyter notebook and copy and paste path.
+data = pd.read_csv("/content/spam.csv", encoding = "latin-1")
+data.info()
+
+data.head()
+
+# Selecting the columns v2 and v1 from the dataset
+data = data[["v2", "v1"]]
+
+# rename columns
+data = data.rename(columns={"v1":"label", "v2":"text"})
+
+# split the dataset into training and testing sets (80-20)
+X_train, X_test, y_train, y_test = train_test_split(data['text'], data['label'], test_size=0.2, random_state=1)
+
+# convert the text data into numerical feature vector
+vectorizer = CountVectorizer()
+
+# fit the model and transform the data
+X_train_counts = vectorizer.fit_transform(X_train)
+
+# train the Naive Bayes Model
+clf=MultinomialNB()
+clf.fit(X_train_counts, y_train)
+ 
+# Test the model and create feature vector for the test set.
+X_test_counts = vectorizer.transform(X_test)
+
+# Predict the output for test set
+y_pred = clf.predict(X_test_counts)
+
+# Print the accuracy of the model
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+=====================Weather Play Decision==============================
+# Importing libraries
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
+
+#define the dataset
+dataset = pd.DataFrame({'Outlook': ['Sunny', 'Sunny', 'Overcast', 'Rainy', 'Rainy', 'Rainy', 'Overcast', 'Sunny', 'Sunny', 'Rainy', 'Sunny', 'Overcast', 'Overcast', 'Rainy'],
+                       'Temperature': ['Hot', 'Hot', 'Hot', 'Mild', 'Cool', 'Cool', 'Cool', 'Mild', 'Cool', 'Mild', 'Mild', 'Mild', 'Hot', 'Mild'],
+                        'Humidity': ['High', 'High', 'High', 'High', 'Normal', 'Normal', 'Normal', 'High', 'Normal', 'Normal', 'Normal', 'High', 'Normal', 'High'],
+                       'Wind': ['Weak', 'Strong', 'Weak', 'Weak', 'Weak', 'Strong', 'Strong', 'Weak', 'Weak', 'Weak', 'Strong', 'Strong', 'Weak', 'Strong'],
+                       'PlayTennis': ['No', 'No', 'Yes', 'Yes', 'Yes', 'No', 'Yes', 'No', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'No']})
+
+# Encode categorical variables
+encoder = OneHotEncoder()
+X = encoder.fit_transform(dataset.iloc[:, :-1]).toarray()
+y = dataset.iloc[:, -1].values
+
+# Split the dataset into training and test sets
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+
+# train the Naive Bayes Model
+nb=MultinomialNB()
+nb.fit(X_train, y_train)
+ 
+#Predict the test set
+y_pred=nb.predict(X_test)
+
+# Evaluate the accuracy of the model
+print("Accuracy:", accuracy_score(y_test, y_pred))
+ 
+#Accepting new data from user
+outlook=input("Enter outlook (Sunny/Overcast/Rainy): ")
+temperature=input("Enter temperature (Hot/Mild/Cold): ")
+humidity=input("Enter humidity (High/Normal): ")
+wind=input("Enter wind (Weak/Strong): ")
+ 
+#Encoding new data
+new_data=[[outlook, temperature, humidity, wind]]
+new_data=encoder.transform(new_data).toarray()
+
+#Predicting whether to play or not
+prediction=nb.predict(new_data)
+print("Prediction:",prediction[0])
+ 
+#Calculating the probabilites of playing or not playing
+probabilities=nb.predict_proba(new_data)
+print("Probability of playing:",probabilities[0][1])
+print("Probability of not playing:",probabilities[0][0])
+ 
+#Deciding based on the probability of playing or not
+if probabilities[0][1] > probabilities[0][0]:
+  print("Decision : Play")
+else :
+  print("Decision : Do not play")
+
+
