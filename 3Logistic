@@ -1,0 +1,60 @@
+# Import necessary libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Load a sample dataset (you should replace this with your own dataset)
+from sklearn.datasets import load_iris
+iris = load_iris()
+X = iris.data
+y = (iris.target == 2).astype(int)  # Convert to binary classification (1 for class 2, 0 for others)
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Create a logistic regression object
+lr = LogisticRegression()
+
+# Train the model using the training sets
+lr.fit(X_train, y_train)
+
+# Make predictions using the testing set
+y_pred = lr.predict(X_test)
+
+# Calculate accuracy to evaluate model performance
+accuracy = accuracy_score(y_test, y_pred)
+print('Accuracy:', accuracy)
+
+# Display a confusion matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+print('Confusion Matrix:')
+print(conf_matrix)
+
+# Display a classification report
+class_report = classification_report(y_test, y_pred)
+print('Classification Report:')
+print(class_report)
+
+# Plot the decision boundary (if the dataset has 2 features)
+if X_train.shape[1] == 2:
+    # Define the mesh grid
+    h = .02  # Step size in the mesh
+    x_min, x_max = X_train[:, 0].min() - 1, X_train[:, 0].max() + 1
+    y_min, y_max = X_train[:, 1].min() - 1, X_train[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+
+    # Predict class labels for each point in the mesh
+    Z = lr.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+
+    # Plot the decision boundary
+    plt.figure(1, figsize=(6, 4))
+    plt.contourf(xx, yy, Z, cmap=plt.cm.RdBu, alpha=0.8)
+    plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=plt.cm.RdBu, edgecolors='k')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.title('Logistic Regression Decision Boundary')
+    plt.show()
