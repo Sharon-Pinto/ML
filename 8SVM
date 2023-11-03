@@ -1,0 +1,42 @@
+import pandas as pd
+from sklearn import svm
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Load the dataset
+data = pd.read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/00292/Wholesale%20customers%20data.csv")
+
+# Split the dataset into features and target
+X = data.drop(['Channel'], axis=1)
+y = data['Channel']
+
+# Split the dataset into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+
+# Create a SVM classifier with  linear kernel
+clf_linear = svm.SVC(kernel='linear')
+
+# Train the classifier
+clf_linear.fit(X_train, y_train)
+ 
+
+# Test the classifier on the test set
+y_pred_linear = clf_linear.predict(X_test)
+
+# Print the accuracy of the classifier with linear kernel
+print("Accuracy (Linear Kernel):", accuracy_score(y_test, y_pred_linear))
+
+ 
+
+# Create a SVM classifier with radial basis function (RBF) kernel
+clf_rbf = svm.SVC(kernel='rbf')
+
+# Train the classifier
+clf_rbf.fit(X_train, y_train)
+ 
+
+# Test the classifier on the test set
+y_pred_rbf = clf_rbf.predict(X_test)
+
+# Print the accuracy of the classifier with RBF kernel
+print("Accuracy (RBF Kernel):", accuracy_score(y_test, y_pred_rbf))
